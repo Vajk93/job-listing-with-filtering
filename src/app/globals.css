@@ -42,3 +42,7 @@
 .text-very-dark-cyan {
   color: var(--color-very-dark-cyan);
 }
+
+body {
+    background: var(--color-light-bg);
+}
