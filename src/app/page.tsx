@@ -21,33 +21,97 @@ interface IJob {
 
 export default function Home() {
 	const [jobs, setJobs] = useState<IJob[]>([]);
+	const [originalJobs, setOriginalJobs] = useState<IJob[]>(jobs);
+
 	const [keywords, setKeywords] = useState<string[]>([]);
 
+	const stacks:string[] = ["HTML", "CSS", "JavaScript", "Ruby", "Python"];
+	const levels: string[] = ["Junior", "Midweight", "Senior"];
+	const roles: string[] = ["Frontend", "Fullstack", "Backend"];
+
 	useEffect(() => {
-		fetch("/data/data.json")
-		.then((response) => response.json())
-		.then((json) => {
-			console.log(json);
-			setJobs(json)
-		})
-		.catch((error) => console.error("Hiba a JSON beolvasásakor:", error));
+		getData();
 	}, []);
 
+	function getData(){
+		fetch("/data/data.json")
+			.then((response) => response.json())
+			.then((json) =>{
+				setJobs(json);
+				setOriginalJobs(json);
+			})
+			.catch((error) => console.error("Hiba a JSON beolvasásakor:", error));
+	}
+	
 	function add(keyword:string){
 		if(!keywords.includes(keyword)){
-			setKeywords([...keywords, keyword]);
+			setKeywords((prev) => [...prev, keyword]);
+			filter(keyword);
 		}
-		console.log(keywords);
+	}
+
+	function clear(){
+		setJobs(originalJobs);
+		setKeywords([]);
 	}
 
 	function remove(keyword: string){
-		setKeywords(keywords.filter((k) => k !== keyword));
-		console.log(keywords)
+		setKeywords((prev) => prev.filter((k) => k !== keyword));
+		const newKeywords = keywords.filter((k) => k !== keyword);
+		let filteredJobs = originalJobs;
+	  
+		newKeywords.forEach((keyword:string) => {
+			if(stacks.includes(keyword)){
+				filteredJobs = filteredJobs.filter((job) => job.languages.includes(keyword))
+			}
+	
+			if(levels.includes(keyword)){
+				filteredJobs = filteredJobs.filter((job) => job.level === keyword)
+			}
+	
+			if(roles.includes(keyword)){
+				filteredJobs = filteredJobs.filter((job) => job.role === keyword)
+			}
+			// haveItem(keyword, filteredJobs, filteredJobs)
+		})
+				
+		setJobs(filteredJobs);
 	}
 
-	useEffect(() => {
-		console.log(keywords);
-	}, [keywords]);
+	function filter(keyword: string) {
+		let filteredJobs = jobs;
+
+		if(stacks.includes(keyword)){
+			filteredJobs = jobs.filter((job) => job.languages.includes(keyword))
+		}
+
+		if(levels.includes(keyword)){
+			filteredJobs = jobs.filter((job) => job.level === keyword)
+		}
+
+		if(roles.includes(keyword)){
+			filteredJobs = jobs.filter((job) => job.role === keyword)
+		}
+		// haveItem(keyword, filteredJobs, jobs)
+		
+		setJobs(filteredJobs);
+	}
+
+	// function haveItem(keyword: string, filteredArray:IJob[], filterThis: IJob[]){
+	// 	if(stacks.includes(keyword)){
+	// 		filteredArray = filterThis.filter((job) => job.languages.includes(keyword))
+	// 	}
+
+	// 	if(levels.includes(keyword)){
+	// 		filteredArray = filterThis.filter((job) => job.level === keyword)
+	// 	}
+
+	// 	if(roles.includes(keyword)){
+	// 		filteredArray = filterThis.filter((job) => job.role === keyword)
+	// 	}
+
+	// 	setJobs(filteredArray);
+	// }
 
 	return (
 		<>
@@ -93,7 +157,7 @@ export default function Home() {
 					</div>
 
 					{keywords.length > 0 ? (
-						<div className="ml-auto">clear</div>
+						<div onClick={() => clear()} className="ml-auto">clear</div>
 					) : (
 						<div className="hidden"></div>
 					)}
