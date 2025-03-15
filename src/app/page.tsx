@@ -26,7 +26,7 @@ const items: IJob[] = JSON.parse(jsonData);
 export default function Home() {
 	return (
 		<>
-			<div className="bg-primary mb-20">
+			<div className="bg-primary">
 				<Image
 					src="/images/bg-header-desktop.svg"
 					alt="Header background"
@@ -48,6 +48,23 @@ export default function Home() {
 			</div>
 
 
+			{/* search bar: */}
+			<div className="relative bg-red-500">
+				<section className="absolute left-[50%] translate-x-[-50%] translate-y-[-50%] w-full mx-auto max-w-[1110px] h-auto bg-white px-[26px] py-5 rounded-sm flex flex-row gap-5">
+					<div className="flex rounded-sm h-[32px] bg-red-400 overflow-hidden">
+						<div className="bg-light-bg h-full px-2 text-[#5CA5A5] text-[16px] font-bold flex items-center ">
+							Frontend							
+						</div>
+						<div className="h-full w-[32px] flex justify-center items-center bg-[#5CA5A5]  hover:bg-[#2B3939] cursor-pointer">
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path fill="#FFF" fill-rule="evenodd" d="M11.314 0l2.121 2.121-4.596 4.596 4.596 4.597-2.121 2.121-4.597-4.596-4.596 4.596L0 11.314l4.596-4.597L0 2.121 2.121 0l4.596 4.596L11.314 0z"/></svg>
+						</div>
+
+					</div>
+				</section>
+			</div>
+
+
+			<div className="mt-20"></div>
 			{items.map((item:IJob, index:number) => (
 				<div key={index} className="mb-5 w-full mx-auto max-w-[1110px] h-[152px] bg-white p-[26px] rounded-sm flex flex-col md:flex-row items-center gap-5">
 
