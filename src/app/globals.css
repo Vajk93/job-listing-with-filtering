@@ -1,22 +1,19 @@
 @import "tailwindcss";
 
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
 
 /* Egyedi színek beállítása CSS változókkal */
 :root {
-  --color-primary: hsl(180, 29%, 50%);
-  --color-light-bg: hsl(180, 52%, 96%);
-  --color-light-filter: hsl(180, 31%, 95%);
-  --color-dark-cyan: hsl(180, 8%, 52%);
-  --color-very-dark-cyan: hsl(180, 14%, 20%);
-  --color-test: hsl(136, 76%, 48%);
+	--color-primary: hsl(180, 29%, 50%);
+	--color-light-bg: hsl(180, 52%, 96%);
+	--color-light-filter: hsl(180, 31%, 95%);
+	--color-dark-cyan: hsl(180, 8%, 52%);
+	--color-very-dark-cyan: hsl(180, 14%, 20%);
+	--color-test: hsl(136, 76%, 48%);
 }
 
 /* Tailwindben való használathoz */
 .bg-primary {
-  background-color: var(--color-primary);
+  	background-color: var(--color-primary);
 }
 
 .bg-test {
@@ -24,25 +21,33 @@
   }
 
 .text-primary {
-  color: var(--color-primary);
+  	color: var(--color-primary);
 }
 
 .bg-light-bg {
-  background-color: var(--color-light-bg);
+  	background-color: var(--color-light-bg);
 }
 
 .bg-light-filter {
-  background-color: var(--color-light-filter);
+  	background-color: var(--color-light-filter);
 }
 
 .text-dark-cyan {
-  color: var(--color-dark-cyan);
+  	color: var(--color-dark-cyan);
 }
 
 .text-very-dark-cyan {
-  color: var(--color-very-dark-cyan);
+  	color: var(--color-very-dark-cyan);
 }
 
 body {
-    background: var(--color-light-bg);
+  background: var(--color-light-bg);
+}
+
+.bg_company_img {
+  height: 88px;
+  width: 88px;
+  border-radius: 50%;
+  background-image: url('../../public/images/photosnap.svg');
+  background-size: cover;
 }
