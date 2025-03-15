@@ -51,3 +51,10 @@ body {
   background-image: url('../../public/images/photosnap.svg');
   background-size: cover;
 }
+
+@media only screen and (max-width: 768px) {
+	.bg_company_img {
+		height: 48px;
+		width: 48px;
+	}
+  }
