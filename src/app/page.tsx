@@ -1,25 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-
-interface IJob {
-	id: number;
-	company: string;
-	logo: string;
-	new: boolean;
-	featured: boolean;
-	position: string;
-	role: string;
-	level: string;
-	postedAt: string;
-	contract: string;
-	location: string;
-	languages: string[];
-	tools: string[];
-}
+import React, { useState, useEffect } from "react";
+import { IJob } from "./interfaces/global.interface";
 
 
 export default function Home() {
+	const [inputValue, setInputhValue] = useState<string>('');
+	const [keywordOptions, setKeywordOptions] = useState<string[]>([]);
+	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+
 	const [jobs, setJobs] = useState<IJob[]>([]);
 	const [originalJobs, setOriginalJobs] = useState<IJob[]>(jobs);
 
@@ -28,6 +17,7 @@ export default function Home() {
 	const stacks:string[] = ["HTML", "CSS", "JavaScript", "Ruby", "Python"];
 	const levels: string[] = ["Junior", "Midweight", "Senior"];
 	const roles: string[] = ["Frontend", "Fullstack", "Backend"];
+	const allKeyword: string[] = [...stacks, ...levels, ...roles];
 
 	useEffect(() => {
 		getData();
@@ -43,23 +33,41 @@ export default function Home() {
 			.catch((error) => console.error("Hiba a JSON beolvasásakor:", error));
 	}
 	
+	function search(event: React.ChangeEvent<HTMLInputElement>){
+		let _val = event.target.value.toLowerCase();
+		setInputhValue(_val);
+		
+		const filtered = allKeyword.filter((k) => k.toLowerCase().includes(_val));
+		setKeywordOptions(filtered)
+
+		if(filtered.length > 0){
+			setOptionsVisible(true);
+		}
+
+		if(_val === ''){
+			setOptionsVisible(false);
+		}
+	}
+
 	function add(keyword:string){
 		if(!keywords.includes(keyword)){
 			setKeywords((prev) => [...prev, keyword]);
 			filter(keyword);
 		}
+		setOptionsVisible(false);
 	}
 
 	function clear(){
+		setInputhValue('');
 		setJobs(originalJobs);
 		setKeywords([]);
 	}
 
 	function remove(keyword: string){
+		let filteredJobs = originalJobs;
+
 		setKeywords((prev) => prev.filter((k) => k !== keyword));
 		const newKeywords = keywords.filter((k) => k !== keyword);
-		let filteredJobs = originalJobs;
-	  
 		newKeywords.forEach((keyword:string) => {
 			if(stacks.includes(keyword)){
 				filteredJobs = filteredJobs.filter((job) => job.languages.includes(keyword))
@@ -72,9 +80,7 @@ export default function Home() {
 			if(roles.includes(keyword)){
 				filteredJobs = filteredJobs.filter((job) => job.role === keyword)
 			}
-			// haveItem(keyword, filteredJobs, filteredJobs)
-		})
-				
+		})	
 		setJobs(filteredJobs);
 	}
 
@@ -92,26 +98,9 @@ export default function Home() {
 		if(roles.includes(keyword)){
 			filteredJobs = jobs.filter((job) => job.role === keyword)
 		}
-		// haveItem(keyword, filteredJobs, jobs)
-		
 		setJobs(filteredJobs);
 	}
 
-	// function haveItem(keyword: string, filteredArray:IJob[], filterThis: IJob[]){
-	// 	if(stacks.includes(keyword)){
-	// 		filteredArray = filterThis.filter((job) => job.languages.includes(keyword))
-	// 	}
-
-	// 	if(levels.includes(keyword)){
-	// 		filteredArray = filterThis.filter((job) => job.level === keyword)
-	// 	}
-
-	// 	if(roles.includes(keyword)){
-	// 		filteredArray = filterThis.filter((job) => job.role === keyword)
-	// 	}
-
-	// 	setJobs(filteredArray);
-	// }
 
 	return (
 		<>
@@ -139,39 +128,72 @@ export default function Home() {
 			</div>
 
 
-			{/* search bar: */}
-			<section className="relative mx-5">
-				<div className="flex items-center min-h-[72px] absolute left-[50%] translate-x-[-50%] translate-y-[-50%] w-full mx-auto max-w-[1110px] h-auto bg-white px-[26px] py-5 rounded-sm ">
-					
-					<div className="flex flex-row flex-wrap gap-5">
-						{keywords.map((word:string, index:number) => (
-						<div key={index} className="flex rounded-sm h-[32px] overflow-hidden">
-							<div className="bg-light-bg h-full px-2 text-[#5CA5A5] text-[16px] font-bold flex items-center ">
-								{word}							
-							</div>
-							<div onClick={() => remove(word)} className="h-full w-[32px] flex justify-center items-center bg-[#5CA5A5]  hover:bg-[#2B3939] cursor-pointer">
-								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path fill="#FFF" fillRule="evenodd" d="M11.314 0l2.121 2.121-4.596 4.596 4.596 4.597-2.121 2.121-4.597-4.596-4.596 4.596L0 11.314l4.596-4.597L0 2.121 2.121 0l4.596 4.596L11.314 0z"/></svg>
-							</div>
-						</div>
-						))}
+			{/* search input: */}
+			<div className="fixed left-5 right-5 top-5 h-10 max-w-[1110px] mx-auto">
+				<div className="relative h-full">
+					<div className="absolute top-0 left-0 flex justify-center items-center h-full px-2 text-slate-600">
+						<svg className="size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
 					</div>
-
-					{keywords.length > 0 ? (
-						<div onClick={() => clear()} className="ml-auto">clear</div>
-					) : (
-						<div className="hidden"></div>
-					)}
-
-
+					<input 
+						type="text" 
+						value={inputValue}
+        				onChange={search}
+						className="w-full h-full rounded-sm pl-10 focus:outline-none bg-white text-[#2B3939] font-medium shadow"
+						placeholder="Search"
+					/>
+					{/* options for search value: */}
+					{ optionsVisible ? (
+						<div className="custom_z_index  h-auto bg-white w-full cursor-pointer rounded-sm mt-1 shadow-lg">
+							{keywordOptions.map((option:string, index:number) => (
+								<div key={index}
+									onClick={(()=> add(option))} 
+									className="hover:bg-[#5CA5A5] text-[#2B3939] hover:text-white rounded-sm py-2 px-3 font-medium">
+										{option}
+								</div>
+							))}
+						</div>
+						) : ( <p className="hidden">nothing</p> )
+					}
 				</div>
-			</section>
+			</div>
 
 
-			{jobs.length > 0 ? (		
+			{/* selected keywords: */}
+			{ keywords.length > 0 ? (
+				<section className={`relative mx-5 ${optionsVisible ? "hidden" : ""}`}>
+					<div className="flex items-center min-h-[72px] absolute left-[50%] translate-x-[-50%] translate-y-[-50%] w-full mx-auto max-w-[1110px] h-auto bg-white px-[26px] py-5 rounded-sm ">
+						
+						<div className="flex flex-row flex-wrap gap-2 lg:gap-5">
+							{ keywords.map((word:string, index:number) => (
+								<div key={index} className="flex rounded-sm h-[32px] overflow-hidden">
+									<div className="bg-light-bg h-full px-2 text-[#5CA5A5] text-[16px] font-bold flex items-center ">
+										{word}							
+									</div>
+									<div onClick={() => remove(word)} className="h-full w-[32px] flex justify-center items-center bg-[#5CA5A5]  hover:bg-[#2B3939] cursor-pointer">
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path fill="#FFF" fillRule="evenodd" d="M11.314 0l2.121 2.121-4.596 4.596 4.596 4.597-2.121 2.121-4.597-4.596-4.596 4.596L0 11.314l4.596-4.597L0 2.121 2.121 0l4.596 4.596L11.314 0z"/></svg>
+									</div>
+								</div>
+							))}
+						</div>
+
+						{ keywords.length > 0 ? (
+							<div onClick={() => clear()} className="ml-auto font-bold text-[#7C8F8F] lg:hover:text-[#5CA5A5] cursor-pointer">clear</div>
+						) : (
+							<div className="hidden"></div>
+						)}
+
+					</div>
+				</section>
+				) : (<p className="hidden">nothing</p>)
+			}
+
+
+			{ jobs && jobs.length > 0 ? (		
 				<div className="mt-20 mx-5">
-					{jobs && jobs.map((item:IJob, index:number) => (
+					{ jobs.map((item:IJob, index:number) => (
 						<div key={index} className="mb-9 lg:mb-5 w-full mx-auto max-w-[1110px] h-auto lg:h-[152px] bg-white 
-							p-5 lg:p-[26px] rounded-sm flex flex-col lg:flex-row lg:items-center gap-5">
+							p-5 lg:p-[26px] rounded-sm flex flex-col lg:flex-row lg:items-center gap-5 
+							border-l-[5px] border-transparent hover:border-[#5CA5A5]">
 
 							<div className="bg_company_img -mt-[42px] lg:mt-0" style={{ backgroundImage: `url(${item.logo})` }}></div>
 
@@ -207,7 +229,7 @@ export default function Home() {
 								<div onClick={() => add(item.level)} className="bg-light-bg h-[32px] px-2 text-[#5CA5A5] text-[16px] font-bold flex items-center rounded-sm cursor-pointer">
 									{item.level}
 								</div>
-								{item.languages.map((item:string, index:number) => (
+								{ item.languages.map((item:string, index:number) => (
 									<div  onClick={() => add(item)} key={index} className="bg-light-bg h-[32px] px-2 text-[#5CA5A5] text-[16px] font-bold flex items-center rounded-sm cursor-pointer">
 										{item}
 									</div>
@@ -221,7 +243,6 @@ export default function Home() {
 				<div className="h-0 text-center w-full mt-16 font-bold text-primary text-xl">
 					Loading...
 				</div>
-
 			)}
 		</>
 	);
