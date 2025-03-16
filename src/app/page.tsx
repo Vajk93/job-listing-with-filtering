@@ -143,11 +143,11 @@ export default function Home() {
 					/>
 					{/* options for search value: */}
 					{ optionsVisible ? (
-						<div className="custom_z_index  h-auto bg-white w-full cursor-pointer rounded-sm mt-1 shadow-lg">
+						<div className="custom_z_index p-2 h-auto bg-white w-full cursor-pointer rounded-sm mt-1 shadow-lg">
 							{keywordOptions.map((option:string, index:number) => (
 								<div key={index}
 									onClick={(()=> add(option))} 
-									className="hover:bg-[#5CA5A5] text-[#2B3939] hover:text-white rounded-sm py-2 px-3 font-medium">
+									className="hover:bg-[#5CA5A5] text-[#2B3939] hover:text-white rounded-sm py-2 px-3 font-medium flex">
 										{option}
 								</div>
 							))}
