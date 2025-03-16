@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=League+Spartan:wght@100..900&display=swap');
 @import "tailwindcss";
 
 
@@ -42,6 +43,7 @@
 
 body {
   background: var(--color-light-bg);
+  font-family: "League Spartan", sans-serif;
 }
 
 .bg_company_img {
