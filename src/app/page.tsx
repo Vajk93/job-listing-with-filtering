@@ -34,7 +34,7 @@ export default function Home() {
 	}
 	
 	function search(event: React.ChangeEvent<HTMLInputElement>){
-		let _val = event.target.value.toLowerCase();
+		const _val = event.target.value.toLowerCase();
 		setInputhValue(_val);
 		
 		const filtered = allKeyword.filter((k) => k.toLowerCase().includes(_val));
